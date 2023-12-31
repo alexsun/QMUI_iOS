@@ -21,4 +21,6 @@
  */
 @interface QMUIPopupMenuBaseItem : UIView <QMUIPopupMenuItemProtocol>
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end

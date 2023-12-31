@@ -33,7 +33,9 @@ typedef NS_ENUM(NSUInteger, QMUIAssetAuthorizationStatus) {
     QMUIAssetAuthorizationStatusNotAuthorized       // 手动禁止了授权
 };
 
-typedef void (^QMUIWriteAssetCompletionBlock)(QMUIAsset *asset, NSError *error);
+NS_ASSUME_NONNULL_BEGIN
+
+typedef void (^QMUIWriteAssetCompletionBlock)(QMUIAsset *_Nullable asset, NSError *_Nullable error);
 
 
 /// 保存图片到指定相册（传入 UIImage）
@@ -75,10 +77,10 @@ extern void QMUISaveVideoAtPathToSavedPhotosAlbumWithAlbumAssetsGroup(NSString *
  *  @param enumerationBlock          参数 resultAssetsGroup 表示每次枚举时对应的相册。枚举所有相册结束后，enumerationBlock 会被再调用一次，
  *                                   这时 resultAssetsGroup 的值为 nil。可以以此作为判断枚举结束的标记。
  */
-- (void)enumerateAllAlbumsWithAlbumContentType:(QMUIAlbumContentType)contentType showEmptyAlbum:(BOOL)showEmptyAlbum showSmartAlbumIfSupported:(BOOL)showSmartAlbumIfSupported usingBlock:(void (^)(QMUIAssetsGroup *resultAssetsGroup))enumerationBlock;
+- (void)enumerateAllAlbumsWithAlbumContentType:(QMUIAlbumContentType)contentType showEmptyAlbum:(BOOL)showEmptyAlbum showSmartAlbumIfSupported:(BOOL)showSmartAlbumIfSupported usingBlock:(nullable void (^)(QMUIAssetsGroup *_Nullable resultAssetsGroup))enumerationBlock;
 
 /// 获取所有相册，默认显示系统的“智能相册”，不显示空相册（经过 contentType 过滤后为空的相册）
-- (void)enumerateAllAlbumsWithAlbumContentType:(QMUIAlbumContentType)contentType usingBlock:(void (^)(QMUIAssetsGroup *resultAssetsGroup))enumerationBlock;
+- (void)enumerateAllAlbumsWithAlbumContentType:(QMUIAlbumContentType)contentType usingBlock:(nullable void (^)(QMUIAssetsGroup *_Nullable resultAssetsGroup))enumerationBlock;
 
 /**
  *  保存图片或视频到指定的相册
@@ -125,7 +127,7 @@ extern void QMUISaveVideoAtPathToSavedPhotosAlbumWithAlbumAssetsGroup(NSString *
 + (NSArray<PHAssetCollection *> *)fetchAllAlbumsWithAlbumContentType:(QMUIAlbumContentType)contentType showEmptyAlbum:(BOOL)showEmptyAlbum showSmartAlbum:(BOOL)showSmartAlbum;
 
 /// 获取一个 PHAssetCollection 中创建日期最新的资源
-+ (PHAsset *)fetchLatestAssetWithAssetCollection:(PHAssetCollection *)assetCollection;
++ (nullable PHAsset *)fetchLatestAssetWithAssetCollection:(PHAssetCollection *)assetCollection;
 
 /**
  *  保存图片或视频到指定的相册
@@ -134,10 +136,12 @@ extern void QMUISaveVideoAtPathToSavedPhotosAlbumWithAlbumAssetsGroup(NSString *
  *           原因请参考 QMUIAssetsManager 对象的保存图片和视频方法的注释。
  *  @warning 无法通过该方法把图片保存到“智能相册”，“智能相册”只能由系统控制资源的增删。
  */
-- (void)addImageToAlbum:(CGImageRef)imageRef albumAssetCollection:(PHAssetCollection *)albumAssetCollection orientation:(UIImageOrientation)orientation completionHandler:(void(^)(BOOL success, NSDate *creationDate, NSError *error))completionHandler;
+- (void)addImageToAlbum:(CGImageRef)imageRef albumAssetCollection:(nullable PHAssetCollection *)albumAssetCollection orientation:(UIImageOrientation)orientation completionHandler:(nullable void(^)(BOOL success, NSDate *_Nullable creationDate, NSError *_Nullable error))completionHandler;
 
-- (void)addImageToAlbum:(NSURL *)imagePathURL albumAssetCollection:(PHAssetCollection *)albumAssetCollection completionHandler:(void(^)(BOOL success, NSDate *creationDate, NSError *error))completionHandler;
+- (void)addImageToAlbum:(NSURL *)imagePathURL albumAssetCollection:(nullable PHAssetCollection *)albumAssetCollection completionHandler:(nullable void(^)(BOOL success, NSDate *_Nullable creationDate, NSError *_Nullable error))completionHandler;
 
-- (void)addVideoToAlbum:(NSURL *)videoPathURL albumAssetCollection:(PHAssetCollection *)albumAssetCollection completionHandler:(void(^)(BOOL success, NSDate *creationDate, NSError *error))completionHandler;
+- (void)addVideoToAlbum:(NSURL *)videoPathURL albumAssetCollection:(nullable PHAssetCollection *)albumAssetCollection completionHandler:(nullable void(^)(BOOL success, NSDate *_Nullable creationDate, NSError *_Nullable error))completionHandler;
 
 @end
+
+NS_ASSUME_NONNULL_END

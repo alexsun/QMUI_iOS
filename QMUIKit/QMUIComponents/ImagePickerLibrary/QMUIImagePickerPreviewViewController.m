@@ -295,7 +295,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             QMUILogInfo(@"QMUIImagePickerLibrary", @"Download iCloud image in preview, current progress is: %f", progress);
             
-            if (self.downloadStatus != QMUIAssetDownloadStatusDownloading) {
+            if (progress < 1 && self.downloadStatus != QMUIAssetDownloadStatusDownloading) {
                 self.downloadStatus = QMUIAssetDownloadStatusDownloading;
                 imageView.cloudDownloadStatus = QMUIAssetDownloadStatusDownloading;
 

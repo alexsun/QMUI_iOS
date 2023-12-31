@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param imageAsset                       被选中的图片的 QMUIAsset 对象
  *  @param imagePickerPreviewViewController 选中图片后进行图片预览的 viewController
  */
-- (void)imagePickerViewController:(QMUIImagePickerViewController *)imagePickerViewController didSelectImageWithImagesAsset:(QMUIAsset *)imageAsset afterImagePickerPreviewViewControllerUpdate:(QMUIImagePickerPreviewViewController *)imagePickerPreviewViewController;
+- (void)imagePickerViewController:(QMUIImagePickerViewController *)imagePickerViewController didSelectImageWithImagesAsset:(QMUIAsset *)imageAsset afterImagePickerPreviewViewControllerUpdate:(nullable QMUIImagePickerPreviewViewController *)imagePickerPreviewViewController;
 
 /// 是否能够选中 checkbox
 - (BOOL)imagePickerViewController:(QMUIImagePickerViewController *)imagePickerViewController shouldCheckImageAtIndex:(NSInteger)index;

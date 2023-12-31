@@ -135,6 +135,7 @@
     if (self.dimmingView && !self.dimmingView.superview) {
         [self.view addSubview:self.dimmingView];
     }
+    [self.view addSubview:self.contentView];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -184,7 +185,6 @@
     };
     
     if (animated) {
-        [self.view addSubview:self.contentView];
         [self.view layoutIfNeeded];
         
         CGRect contentViewFrame = [self contentViewFrameForShowing];
@@ -214,7 +214,6 @@
         }
         CGRect contentViewFrame = [self contentViewFrameForShowing];
         self.contentView.frame = contentViewFrame;
-        [self.view addSubview:self.contentView];
         didShownCompletion(YES);
     }
 }
@@ -437,13 +436,26 @@
 
 #pragma mark - ContentView
 
+- (UIView *)contentView {
+    if (!_contentView && self.contentViewController) {
+        _contentView = self.contentViewController.view;
+    }
+    return _contentView;
+}
+
 - (void)setContentViewController:(UIViewController<QMUIModalPresentationContentViewControllerProtocol> *)contentViewController {
     if (![contentViewController isEqual:_contentViewController]) {
         _contentViewController.qmui_modalPresentationViewController = nil;
+        [_contentViewController removeFromParentViewController];
     }
+    [contentViewController willMoveToParentViewController:self];
     contentViewController.qmui_modalPresentationViewController = self;
     _contentViewController = contentViewController;
-    self.contentView = contentViewController.view;
+    if (contentViewController) {
+        self.contentView = nil;
+        [self addChildViewController:contentViewController];
+        [contentViewController didMoveToParentViewController:self];
+    }
 }
 
 #pragma mark - Showing and Hiding
@@ -692,7 +704,28 @@
     return YES;
 }
 
+- (void)setQmui_supportedInterfaceOrientationsBlock:(UIInterfaceOrientationMask (^)(void))qmui_supportedInterfaceOrientationsBlock {
+    [super setQmui_supportedInterfaceOrientationsBlock:qmui_supportedInterfaceOrientationsBlock];
+    if (@available(iOS 16.0, *)) {
+        [self setNeedsUpdateOfSupportedInterfaceOrientations];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
+- (void)setSupportedOrientationMask:(UIInterfaceOrientationMask)supportedOrientationMask {
+    _supportedOrientationMask = supportedOrientationMask;
+    if (@available(iOS 16.0, *)) {
+        [self setNeedsUpdateOfSupportedInterfaceOrientations];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if (self.qmui_supportedInterfaceOrientationsBlock) {
+        return self.qmui_supportedInterfaceOrientationsBlock();
+    }
     UIViewController *visibleViewController = [QMUIHelper visibleViewController];
     if (visibleViewController != self && [visibleViewController respondsToSelector:@selector(supportedInterfaceOrientations)]) {
         return [visibleViewController supportedInterfaceOrientations];
@@ -721,21 +754,21 @@
 
 // 当以 present 方式显示浮层时，状态栏允许由 contentViewController 控制，但 QMUIModalPresentationViewController 的 qmui_prefersStatusBarHiddenBlock/qmui_preferredStatusBarStyleBlock 优先级会更高
 - (UIViewController *)childViewControllerForStatusBarHidden {
-    if (self.shownInPresentedMode && self.contentViewController) {
+    if ((self.shownInPresentedMode || self.shownInWindowMode) && self.contentViewController) {
         return self.contentViewController;
     }
     return [super childViewControllerForStatusBarHidden];
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
-    if (self.shownInPresentedMode && self.contentViewController) {
+    if ((self.shownInPresentedMode || self.shownInWindowMode) && self.contentViewController) {
         return self.contentViewController;
     }
     return [super childViewControllerForStatusBarStyle];
 }
 
 - (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
-    if (self.shownInPresentedMode) {
+    if ((self.shownInPresentedMode || self.shownInWindowMode) && self.contentViewController) {
         return self.contentViewController;
     }
     return [super childViewControllerForHomeIndicatorAutoHidden];

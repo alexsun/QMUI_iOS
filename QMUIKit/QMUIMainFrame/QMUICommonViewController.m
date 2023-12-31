@@ -97,6 +97,7 @@
         
         _hideKeyboardTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:nil action:NULL];
         self.hideKeyboardTapGestureRecognizer.delegate = _hideKeyboadDelegateObject;
+        self.hideKeyboardTapGestureRecognizer.delaysTouchesBegan = YES;
         self.hideKeyboardTapGestureRecognizer.enabled = NO;
         [self.view addGestureRecognizer:self.hideKeyboardTapGestureRecognizer];
         
@@ -216,6 +217,15 @@
     return self.supportedOrientationMask;
 }
 
+- (void)setSupportedOrientationMask:(UIInterfaceOrientationMask)supportedOrientationMask {
+    _supportedOrientationMask = supportedOrientationMask;
+    if (@available(iOS 16.0, *)) {
+        [self setNeedsUpdateOfSupportedInterfaceOrientations];
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 @end
 
 @implementation QMUICommonViewController (QMUISubclassingHooks)
@@ -307,6 +317,10 @@
 
 #pragma mark - <UIGestureRecognizerDelegate>
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceivePress:(UIPress *)press {
+    return NO;
+}
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer != self.viewController.hideKeyboardTapGestureRecognizer) {
         return YES;
@@ -324,9 +338,13 @@
     }
     
     if ([self.viewController shouldHideKeyboardWhenTouchInView:targetView]) {
-        [self.viewController.view endEditing:YES];
+        [self.viewController.view.window endEditing:YES];
     }
     return NO;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]];
 }
 
 #pragma mark - <QMUIKeyboardManagerDelegate>

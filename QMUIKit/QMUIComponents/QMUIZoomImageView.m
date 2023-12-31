@@ -451,6 +451,7 @@ static NSUInteger const kTagForCenteredPlayButton = 1;
     self.videoPlayerLayer.hidden = NO;
     self.videoCenteredPlayButton.hidden = NO;
     self.videoToolbar.playButton.hidden = NO;
+    self.videoToolbar.pauseButton.hidden = YES;
     
     [self revertZooming];
 }

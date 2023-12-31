@@ -521,6 +521,7 @@ QMUISynthesizeBOOLProperty(qmui_shouldIgnoreUIKVCAccessProhibited, setQmui_shoul
                 va_list args;
                 va_start(args, format);
                 NSString *reason =  [[NSString alloc] initWithFormat:format arguments:args];
+
                 originSelectorIMP(selfObject, originCMD, raise, reason);
                 va_end(args);
             };

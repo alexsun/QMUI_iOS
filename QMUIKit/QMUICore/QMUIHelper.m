@@ -52,9 +52,13 @@ NSString *const kQMUIResourcesBundleName = @"QMUIResources";
 + (UIImage *)imageWithName:(NSString *)name {
     static NSBundle *resourceBundle = nil;
     if (!resourceBundle) {
+#ifdef SWIFT_PACKAGE
+        resourceBundle = SWIFTPM_MODULE_BUNDLE;
+#else
         NSBundle *mainBundle = [NSBundle bundleForClass:self];
         NSString *resourcePath = [mainBundle pathForResource:kQMUIResourcesBundleName ofType:@"bundle"];
         resourceBundle = [NSBundle bundleWithPath:resourcePath] ?: mainBundle;
+#endif
     }
     UIImage *image = [UIImage imageNamed:name inBundle:resourceBundle compatibleWithTraitCollection:nil];
     return image;

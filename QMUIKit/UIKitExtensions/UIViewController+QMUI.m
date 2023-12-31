@@ -32,6 +32,7 @@ QMUISynthesizeIdCopyProperty(qmui_prefersStatusBarHiddenBlock, setQmui_prefersSt
 QMUISynthesizeIdCopyProperty(qmui_preferredStatusBarStyleBlock, setQmui_preferredStatusBarStyleBlock)
 QMUISynthesizeIdCopyProperty(qmui_preferredStatusBarUpdateAnimationBlock, setQmui_preferredStatusBarUpdateAnimationBlock)
 QMUISynthesizeIdCopyProperty(qmui_prefersHomeIndicatorAutoHiddenBlock, setQmui_prefersHomeIndicatorAutoHiddenBlock)
+QMUISynthesizeIdCopyProperty(qmui_supportedInterfaceOrientationsBlock, setQmui_supportedInterfaceOrientationsBlock)
 
 + (void)load {
     static dispatch_once_t onceToken;
@@ -182,6 +183,20 @@ QMUISynthesizeIdCopyProperty(qmui_prefersHomeIndicatorAutoHiddenBlock, setQmui_p
                 return result;
             };
         });
+        
+        OverrideImplementation([UIViewController class], @selector(supportedInterfaceOrientations), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+            return ^BOOL(UIViewController *selfObject) {
+                if (selfObject.qmui_supportedInterfaceOrientationsBlock) {
+                    return selfObject.qmui_supportedInterfaceOrientationsBlock();
+                }
+                
+                // call super
+                BOOL (*originSelectorIMP)(id, SEL);
+                originSelectorIMP = (BOOL (*)(id, SEL))originalIMPProvider();
+                BOOL result = originSelectorIMP(selfObject, originCMD);
+                return result;
+            };
+        });
     });
 }
 
@@ -263,7 +278,7 @@ static char kAssociatedObjectKey_visibleState;
 
 - (BOOL)qmui_isPresented {
     UIViewController *viewController = self;
-    if (self.navigationController) {
+    if (self.navigationController && self.navigationController == self.parentViewController) {
         if (self.navigationController.qmui_rootViewController != self) {
             return NO;
         }
@@ -284,6 +299,14 @@ static char kAssociatedObjectKey_visibleState;
     }
     
     if ([self isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabCtrl = (UITabBarController *)self;
+        UINavigationController *nav = tabCtrl.selectedViewController;
+        if ([nav isKindOfClass:UINavigationController.class]
+            && [nav viewControllers] == 0
+            && tabCtrl.moreNavigationController.visibleViewController) {
+            return [tabCtrl.moreNavigationController qmui_visibleViewControllerIfExist];
+        }
+        
         return [((UITabBarController *)self).selectedViewController qmui_visibleViewControllerIfExist];
     }
     

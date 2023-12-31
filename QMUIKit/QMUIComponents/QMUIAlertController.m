@@ -759,7 +759,7 @@ static NSUInteger alertControllerCount = 0;
         }
         // 把上下的margin都加上用于跟整个屏幕的高度做比较
         CGFloat contentHeight = contentOriginY + UIEdgeInsetsGetVerticalValue(self.sheetContentMargin);
-        CGFloat screenSpaceHeight = CGRectGetHeight(self.view.bounds) - SafeAreaInsetsConstantForDeviceWithNotch.top - (self.isExtendBottomLayout ? 0 : SafeAreaInsetsConstantForDeviceWithNotch.bottom);
+        CGFloat screenSpaceHeight = CGRectGetHeight(self.view.bounds) - SafeAreaInsetsConstantForDeviceWithNotch.top - (self.isExtendBottomLayout ? SafeAreaInsetsConstantForDeviceWithNotch.bottom : 0);
         if (contentHeight > screenSpaceHeight) {
             CGFloat cancelButtonAreaHeight = (self.cancelAction ? (CGRectGetHeight(self.cancelAction.button.bounds) + self.sheetCancelButtonMarginTop) : 0);
             screenSpaceHeight = screenSpaceHeight - cancelButtonAreaHeight - UIEdgeInsetsGetVerticalValue(self.sheetContentMargin);
