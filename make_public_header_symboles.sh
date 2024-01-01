@@ -10,17 +10,9 @@ mkdir "include"
 for i in **/*.h; do
     echo $i
     cd "include"
-#    if [ ! -d "$(dirname $i)" ]
-#    then
-##        echo "mkdir: include/$(dirname $i)"
-#        mkdir -p "$(dirname $i)"
-##    else
-##        echo "directory exists: include/$(dirname $i)"
-#    fi
-#    echo "ln -sF ../$i $i"
-#${1##*/}
-#    ln -sF "../$i" "${i##*/}"
-    ln -sF "../$i" "$(basename $i)"
+    if [[ $i != *Private.h ]]; then
+        ln -sF "../$i" "$(basename $i)"
+    fi
     cd ..
 done
 
