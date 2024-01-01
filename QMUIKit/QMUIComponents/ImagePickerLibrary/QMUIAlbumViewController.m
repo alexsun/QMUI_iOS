@@ -239,6 +239,7 @@
     [self.imagePickerViewController refreshWithAssetsGroup:assetsGroup];
     self.imagePickerViewController.title = [assetsGroup name];
     [self.navigationController pushViewController:self.imagePickerViewController animated:animated];
+    [self loadViewIfNeeded];
 }
 
 - (void)pickLastAlbumGroupDirectlyIfCan {
