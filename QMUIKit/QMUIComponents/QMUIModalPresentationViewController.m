@@ -449,8 +449,12 @@
 }
 
 - (void)setContentViewController:(UIViewController<QMUIModalPresentationContentViewControllerProtocol> *)contentViewController {
+    if (![contentViewController isEqual:_contentViewController]) {
+        _contentViewController.qmui_modalPresentationViewController = nil;
+    }
     contentViewController.qmui_modalPresentationViewController = self;
     _contentViewController = contentViewController;
+    self.contentView = contentViewController.view;
 }
 
 #pragma mark - Showing and Hiding

@@ -290,7 +290,7 @@ static char kAssociatedObjectKey_visibleState;
 
 - (BOOL)qmui_isPresented {
     UIViewController *viewController = self;
-    if (self.navigationController && self.navigationController == self.parentViewController) {
+    if (self.navigationController) {
         if (self.navigationController.qmui_rootViewController != self) {
             return NO;
         }
