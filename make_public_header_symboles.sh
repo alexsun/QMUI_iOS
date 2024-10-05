@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-cd "QMUIKit"
+cd "QMUIKit" || exit
 
 rm -rf "include"
 mkdir "include"
@@ -9,10 +9,11 @@ mkdir "include"
 
 for i in **/*.h; do
     echo $i
-    cd "include"
+    # shellcheck disable=SC3010
     if [[ $i != *Private.h ]]; then
+        cd "include" || exit
         ln -sF "../$i" "$(basename $i)"
+        cd ..
     fi
-    cd ..
 done
 
