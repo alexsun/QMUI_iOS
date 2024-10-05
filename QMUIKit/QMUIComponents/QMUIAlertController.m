@@ -180,7 +180,7 @@ static NSUInteger alertControllerCount = 0;
 
 @property(nonatomic, strong) UIView *containerView;
 
-@property(nonatomic, strong) UIControl *maskView;
+@property(nonatomic, strong) UIControl *qmui_maskView;
 
 @property(nonatomic, strong) UIView *scrollWrapView;
 @property(nonatomic, strong) UIScrollView *headerScrollView;
@@ -520,7 +520,7 @@ static NSUInteger alertControllerCount = 0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.view addSubview:self.maskView];
+    [self.view addSubview:self.qmui_maskView];
     [self.view addSubview:self.containerView];
     [self.containerView addSubview:self.scrollWrapView];
     [self.scrollWrapView addSubview:self.headerScrollView];
@@ -539,7 +539,7 @@ static NSUInteger alertControllerCount = 0;
     BOOL shouldShowSeparatorAtTopOfButtonAtFirstLine = hasTitle || hasMessage || hasCustomView;
     CGFloat contentOriginY = 0;
     
-    self.maskView.frame = self.view.bounds;
+    self.qmui_maskView.frame = self.view.bounds;
     
     if (self.preferredStyle == QMUIAlertControllerStyleAlert) {
         
@@ -845,7 +845,7 @@ static NSUInteger alertControllerCount = 0;
             weakSelf.containerView.alpha = 0;
             weakSelf.containerView.layer.transform = CATransform3DMakeScale(1.2, 1.2, 1.0);
             [UIView animateWithDuration:0.25f delay:0 options:QMUIViewAnimationOptionsCurveOut animations:^{
-                weakSelf.maskView.alpha = 1;
+                weakSelf.qmui_maskView.alpha = 1;
                 weakSelf.containerView.alpha = 1;
                 weakSelf.containerView.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0);
             } completion:^(BOOL finished) {
@@ -856,7 +856,7 @@ static NSUInteger alertControllerCount = 0;
         } else if (self.preferredStyle == QMUIAlertControllerStyleActionSheet) {
             weakSelf.containerView.layer.transform = CATransform3DMakeTranslation(0, CGRectGetHeight(weakSelf.view.bounds) - CGRectGetMinY(weakSelf.containerView.frame), 0);
             [UIView animateWithDuration:0.25f delay:0 options:QMUIViewAnimationOptionsCurveOut animations:^{
-                weakSelf.maskView.alpha = 1;
+                weakSelf.qmui_maskView.alpha = 1;
                 weakSelf.containerView.layer.transform = CATransform3DIdentity;
             } completion:^(BOOL finished) {
                 if (completion) {
@@ -869,7 +869,7 @@ static NSUInteger alertControllerCount = 0;
     self.modalPresentationViewController.hidingAnimation = ^(UIView *dimmingView, CGRect containerBounds, CGFloat keyboardHeight, void(^completion)(BOOL finished)) {
         if (self.preferredStyle == QMUIAlertControllerStyleAlert) {
             [UIView animateWithDuration:0.25f delay:0 options:QMUIViewAnimationOptionsCurveOut animations:^{
-                weakSelf.maskView.alpha = 0;
+                weakSelf.qmui_maskView.alpha = 0;
                 weakSelf.containerView.alpha = 0;
             } completion:^(BOOL finished) {
                 weakSelf.containerView.alpha = 1;
@@ -879,7 +879,7 @@ static NSUInteger alertControllerCount = 0;
             }];
         } else if (self.preferredStyle == QMUIAlertControllerStyleActionSheet) {
             [UIView animateWithDuration:0.25f delay:0 options:QMUIViewAnimationOptionsCurveOut animations:^{
-                weakSelf.maskView.alpha = 0;
+                weakSelf.qmui_maskView.alpha = 0;
                 weakSelf.containerView.layer.transform = CATransform3DMakeTranslation(0, CGRectGetHeight(weakSelf.view.bounds) - CGRectGetMinY(weakSelf.containerView.frame), 0);
             } completion:^(BOOL finished) {
                 if (completion) {
@@ -919,7 +919,7 @@ static NSUInteger alertControllerCount = 0;
     __weak __typeof(self)weakSelf = self;
     
     [self.modalPresentationViewController showWithAnimated:animated completion:^(BOOL finished) {
-        weakSelf.maskView.alpha = 1;
+        weakSelf.qmui_maskView.alpha = 1;
         weakSelf.willShow = NO;
         weakSelf.showing = YES;
         if (weakSelf.isNeedsHideAfterAlertShowed) {
@@ -963,7 +963,7 @@ static NSUInteger alertControllerCount = 0;
         weakSelf.modalPresentationViewController = nil;
         weakSelf.willShow = NO;
         weakSelf.showing = NO;
-        weakSelf.maskView.alpha = 0;
+        weakSelf.qmui_maskView.alpha = 0;
         if (self.preferredStyle == QMUIAlertControllerStyleAlert) {
             weakSelf.containerView.alpha = 0;
         } else {
@@ -1007,7 +1007,7 @@ static NSUInteger alertControllerCount = 0;
 }
 
 - (void)addCancelAction {
-    QMUIAlertAction *action = [QMUIAlertAction actionWithTitle:@"取消" style:QMUIAlertActionStyleCancel handler:nil];
+    QMUIAlertAction *action = [QMUIAlertAction actionWithTitle:NSLocalizedString(@"取消", nil) style:QMUIAlertActionStyleCancel handler:nil];
     [self addAction:action];
 }
 
@@ -1174,14 +1174,14 @@ static NSUInteger alertControllerCount = 0;
 
 #pragma mark - Getters & Setters
 
-- (UIControl *)maskView {
-    if (!_maskView) {
-        _maskView = [[UIControl alloc] init];
-        _maskView.alpha = 0;
-        _maskView.backgroundColor = UIColorMask;
-        [_maskView addTarget:self action:@selector(handleMaskViewEvent:) forControlEvents:UIControlEventTouchUpInside];
+- (UIControl *)qmui_maskView {
+    if (!_qmui_maskView) {
+        _qmui_maskView = [[UIControl alloc] init];
+        _qmui_maskView.alpha = 0;
+        _qmui_maskView.backgroundColor = UIColorMask;
+        [_qmui_maskView addTarget:self action:@selector(handleMaskViewEvent:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _maskView;
+    return _qmui_maskView;
 }
 
 - (UIView *)containerView {

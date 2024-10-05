@@ -135,7 +135,7 @@ static NSInteger const kQMUIMoreOperationItemViewTagOffset = 999;
         _cancelButton.adjustsButtonWhenHighlighted = NO;
         _cancelButton.titleLabel.font = self.cancelButtonFont;
         _cancelButton.backgroundColor = self.cancelButtonBackgroundColor;
-        [_cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [_cancelButton setTitle:NSLocalizedString(@"取消", nil) forState:UIControlStateNormal];
         [_cancelButton setTitleColor:self.cancelButtonTitleColor forState:UIControlStateNormal];
         [_cancelButton setTitleColor:[self.cancelButtonTitleColor colorWithAlphaComponent:ButtonHighlightedAlpha] forState:UIControlStateHighlighted];
         _cancelButton.qmui_borderPosition = self.cancelButtonMarginTop > 0 ? QMUIViewBorderPositionNone : QMUIViewBorderPositionTop;

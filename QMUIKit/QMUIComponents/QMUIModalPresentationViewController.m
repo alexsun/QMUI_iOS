@@ -135,7 +135,11 @@
     if (self.dimmingView && !self.dimmingView.superview) {
         [self.view addSubview:self.dimmingView];
     }
+    if (self.contentViewController) {
+        [self addChildViewController:self.contentViewController];
+    }
     [self.view addSubview:self.contentView];
+    [self.contentViewController didMoveToParentViewController:self];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -444,18 +448,8 @@
 }
 
 - (void)setContentViewController:(UIViewController<QMUIModalPresentationContentViewControllerProtocol> *)contentViewController {
-    if (![contentViewController isEqual:_contentViewController]) {
-        _contentViewController.qmui_modalPresentationViewController = nil;
-        [_contentViewController removeFromParentViewController];
-    }
-    [contentViewController willMoveToParentViewController:self];
     contentViewController.qmui_modalPresentationViewController = self;
     _contentViewController = contentViewController;
-    if (contentViewController) {
-        self.contentView = nil;
-        [self addChildViewController:contentViewController];
-        [contentViewController didMoveToParentViewController:self];
-    }
 }
 
 #pragma mark - Showing and Hiding
@@ -637,7 +631,23 @@
         }
     }
     
-    self.disappearCompletionBlock = completion;
+    self.disappearCompletionBlock = ^(BOOL finished) {
+        if (self.parentViewController) {
+            [self willMoveToParentViewController:nil];
+            [self removeFromParentViewController];
+        }
+        if (completion) {
+            completion(finished);
+        }
+    };
+    /*
+     [self hideInView:self.view.superview animated:animated completion:^(BOOL finished) {
+     [self willMoveToParentViewController:nil];
+     [self removeFromParentViewController];
+     if (completion) completion(finished);
+     }];
+     */
+    
     [self beginAppearanceTransition:NO animated:animated];
     if (animated) {
         self.hasAlreadyViewWillDisappear = YES;

@@ -23,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign, readonly) UITableViewCellStyle style;
 
 /**
+ *  调整 Cell 额外附加高度，默认为 0。
+ *  @warning 目前只对 self-sizing cell 开放
+ */
+@property(nonatomic, assign) CGFloat additionalHeight;
+
+/**
  *  调整 imageView 的位置偏移，常用于调整 imageView 和 textLabel 之间的间距，默认为 UIEdgeInsetsZero。
  *  @warning 目前只对 UITableViewCellStyleDefault 和 UITableViewCellStyleSubtitle 类型的 cell 开放
  */

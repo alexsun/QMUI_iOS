@@ -147,9 +147,9 @@
 - (void)setupNavigationItems {
     [super setupNavigationItems];
     if (!self.title) {
-        self.title = @"照片";
+        self.title = NSLocalizedString(@"照片", nil);
     }
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem qmui_itemWithTitle:@"取消" target:self action:@selector(handleCancelSelectAlbum:)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem qmui_itemWithTitle:NSLocalizedString(@"取消", nil) target:self action:@selector(handleCancelSelectAlbum:)];
 }
 
 - (void)initTableView {
@@ -170,7 +170,7 @@
             if (!appName) {
                 appName = [mainInfoDictionary objectForKey:(NSString *)kCFBundleNameKey];
             }
-            tipString = [NSString stringWithFormat:@"请在设备的\"设置-隐私-照片\"选项中，允许%@访问你的手机相册", appName];
+            tipString = [NSString stringWithFormat:NSLocalizedString(@"请在设备的\"设置-隐私-照片\"选项中，允许%@访问你的手机相册", nil), appName];
         }
         [self showEmptyViewWithText:tipString detailText:nil buttonTitle:nil buttonAction:nil];
     } else {
@@ -222,7 +222,7 @@
             [self hideEmptyView];
         }
     } else {
-        NSString *tipString = self.tipTextWhenPhotosEmpty ? : @"空照片";
+        NSString *tipString = self.tipTextWhenPhotosEmpty ? : NSLocalizedString(@"空照片", nil);
         [self showEmptyViewWithText:tipString detailText:nil buttonTitle:nil buttonAction:nil];
     }
     [self.tableView reloadData];
@@ -292,16 +292,16 @@
     [[QMUIAssetsManager sharedInstance] enumerateAllAlbumsWithAlbumContentType:self.contentType usingBlock:^(QMUIAssetsGroup *resultAssetsGroup) {
         if (resultAssetsGroup) {
             [albums addObject:resultAssetsGroup];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.albumsArray = albums;
-                [self sortAlbumArray];
-                [self refreshAlbumAndShowEmptyTipIfNeed];
-                if (self.imagePickerViewController) {
-                    [self.imagePickerViewController updateCollectionViewWithChangeInstance:changeInstance];
-                }
-            });
         }
     }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.albumsArray = albums;
+        [self sortAlbumArray];
+        [self refreshAlbumAndShowEmptyTipIfNeed];
+        if (self.imagePickerViewController) {
+            [self.imagePickerViewController updateCollectionViewWithChangeInstance:changeInstance];
+        }
+    });
 }
+
 @end

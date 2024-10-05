@@ -407,7 +407,7 @@ static char kAssociatedObjectKey_shouldShowSearchBar;
     if ([self isViewLoaded] && self.shouldShowSearchBar && !self.searchController) {
         self.searchController = [[QMUISearchController alloc] initWithContentsViewController:self resultsTableViewStyle:self.tableView.style];
         self.searchController.searchResultsDelegate = self;
-        self.searchController.searchBar.placeholder = @"搜索";
+        self.searchController.searchBar.placeholder = NSLocalizedString(@"搜索", nil);
         self.searchController.searchBar.qmui_usedAsTableHeaderView = YES;// 以 tableHeaderView 的方式使用 searchBar 的话，将其置为 YES，以辅助兼容一些系统 bug
         self.tableView.tableHeaderView = self.searchController.searchBar;
         self.searchBar = self.searchController.searchBar;

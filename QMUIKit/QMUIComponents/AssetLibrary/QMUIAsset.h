@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
 @property(nonatomic, strong, readonly) PHAsset *phAsset;
 @property(nonatomic, assign, readonly) QMUIAssetDownloadStatus downloadStatus; // 从 iCloud 下载资源大图的状态
 @property(nonatomic, assign) double downloadProgress; // 从 iCloud 下载资源大图的进度
-@property(nonatomic, assign) NSInteger requestID; // 从 iCloud 请求获得资源的大图的请求 ID
+@property(nonatomic, assign) PHImageRequestID requestID; // 从 iCloud 请求获得资源的大图的请求 ID
 @property (nonatomic, copy, readonly) NSString *identifier;// Asset 的标识，每个 QMUIAsset 的 identifier 都不同。只要两个 QMUIAsset 的 identifier 相同则认为它们是同一个 asset
 
 /// Asset 的原图（包含系统相册“编辑”功能处理后的效果）
@@ -78,7 +78,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  */
 - (UIImage *)previewImage;
 
-- (NSInteger)requestOriginalImageWithCompletion:(void (^)(UIImage *image,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed;
+- (PHImageRequestID)requestOriginalImageWithCompletion:(void (^)(UIImage *image,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed;
 
 /**
  *  异步请求 Asset 的原图，包含了系统照片“编辑”功能处理后的效果（剪裁，旋转和滤镜等），可能会有网络请求
@@ -89,7 +89,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  *
  *  @return 返回请求图片的请求 id
  */
-- (NSInteger)requestOriginImageWithCompletion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
+- (PHImageRequestID)requestOriginImageWithCompletion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
 
 /**
  *  异步请求 Asset 的缩略图，不会产生网络请求
@@ -100,7 +100,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  *
  *  @return 返回请求图片的请求 id
  */
-- (NSInteger)requestThumbnailImageWithSize:(CGSize)size completion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion;
+- (PHImageRequestID)requestThumbnailImageWithSize:(CGSize)size completion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion;
 
 /**
  *  异步请求 Asset 的预览图，可能会有网络请求
@@ -111,7 +111,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  *
  *  @return 返回请求图片的请求 id
  */
-- (NSInteger)requestPreviewImageWithCompletion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
+- (PHImageRequestID)requestPreviewImageWithCompletion:(void (^)(UIImage *result, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
 
 /**
  *  异步请求 Live Photo，可能会有网络请求
@@ -123,7 +123,7 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  *
  *  @return 返回请求图片的请求 id
  */
-- (NSInteger)requestLivePhotoWithCompletion:(void (^)(PHLivePhoto *livePhoto, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
+- (PHImageRequestID)requestLivePhotoWithCompletion:(void (^)(PHLivePhoto *livePhoto, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetImageProgressHandler)phProgressHandler;
 
 /**
  *  异步请求 AVPlayerItem，可能会有网络请求
@@ -133,14 +133,16 @@ typedef NS_ENUM(NSUInteger, QMUIAssetDownloadStatus) {
  *
  *  @return 返回请求 AVPlayerItem 的请求 id
  */
-- (NSInteger)requestPlayerItemWithCompletion:(void (^)(AVPlayerItem *playerItem, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetVideoProgressHandler)phProgressHandler;
+- (PHImageRequestID)requestPlayerItemWithCompletion:(void (^)(AVPlayerItem *playerItem, NSDictionary<NSString *, id> *info))completion withProgressHandler:(PHAssetVideoProgressHandler)phProgressHandler;
 
 /**
  *  异步请求图片的 Data
  *
  *  @param completion 完成请求后调用的 block，参数中包含了请求的图片 Data（若 assetType 不是 QMUIAssetTypeImage 或 QMUIAssetTypeLivePhoto 则为 nil），该图片是否为 GIF 的判断值，以及该图片的文件格式是否为 HEIC
+ *
+ *  @return 返回请求图片的请求 id
  */
-- (void)requestImageData:(void (^)(NSData *imageData, NSDictionary<NSString *, id> *info, BOOL isGIF, BOOL isHEIC))completion;
+- (PHImageRequestID)requestImageData:(void (^)(NSData *imageData, NSDictionary<NSString *, id> *info, BOOL isGIF, BOOL isHEIC))completion;
 
 /**
  * 获取图片的 UIImageOrientation 值，仅 assetType 为 QMUIAssetTypeImage 或 QMUIAssetTypeLivePhoto 时有效

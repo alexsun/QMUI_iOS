@@ -113,6 +113,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nullable, nonatomic, strong, readonly) QMUIAssetsGroup *assetsGroup;
 
+@property (nonatomic, assign, readonly) QMUIAlbumSortType albumSortType;
+
 /// 当前被选择的图片对应的 QMUIAsset 对象数组
 @property(nullable, nonatomic, strong, readonly) NSMutableArray<QMUIAsset *> *selectedImageAssetArray;
 
@@ -140,7 +142,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 也可以直接传入 QMUIAssetsGroup，然后读取其中的 QMUIAsset 并储存到 imagesAssetArray 中，传入后会赋值到 QMUIAssetsGroup，并自动刷新 UI 展示
 - (void)refreshWithAssetsGroup:(QMUIAssetsGroup * _Nullable)assetsGroup;
 
+- (QMUIAsset *)imageAssetForIndex:(NSInteger)index;
+
 - (void)updateCollectionViewWithChangeInstance:(PHChange *)changeInstance;
+
+- (void)scrollToInitialPositionIfNeeded;
 
 @end
 

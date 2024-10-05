@@ -149,7 +149,7 @@ NS_ASSUME_NONNULL_BEGIN
  获取两个颜色之间的差异程度，0表示相同，值越大表示差距越大，例如纯白和纯黑会返回 86，如果遇到异常情况（例如传进来的 color 为 nil，则会返回 CGFLOAT_MAX）。
  原理是将两个颜色摆放在 HSB(HSV) 模型内，取两个点之间的距离。由于 HSB(HSV) 没有 alpha 的概念，所以色值相同半透明程度不同的两个颜色会返回 0，也即相等。
  */
-- (CGFloat)qmui_distanceBetweenColor:(UIColor *)color;
+- (CGFloat)qmui_distanceBetweenColor:(nullable UIColor *)color;
 
 /**
  *  计算两个颜色叠加之后的最终色（注意区分前景色后景色的顺序）<br/>

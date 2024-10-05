@@ -60,6 +60,32 @@
     return self;
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self qmui_styledAsQMUITableViewCell];
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    CGSize result = [super sizeThatFits:size];
+//    result.height += self.additionalHeight;
+    return result;
+}
+
+- (CGSize)systemLayoutSizeFittingSize:(CGSize)targetSize withHorizontalFittingPriority:(UILayoutPriority)horizontalFittingPriority verticalFittingPriority:(UILayoutPriority)verticalFittingPriority {
+    CGSize size = [super systemLayoutSizeFittingSize:targetSize
+                       withHorizontalFittingPriority:UILayoutPriorityRequired
+                             verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+    size.height += self.additionalHeight;
+    return size;
+}
+
+- (CGSize)intrinsicContentSize {
+    CGSize targetSize = CGSizeMake(self.qmui_tableView.qmui_validContentWidth, CGFLOAT_MAX);
+    return [self systemLayoutSizeFittingSize:targetSize
+               withHorizontalFittingPriority:UILayoutPriorityRequired
+                     verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+}
+
 // layoutSubviews 里不可以拿 textLabel 的 minX 来设置 separatorInset，如果要设置只能写死一个值，否则会导致 textLabel 的 minX 逐渐叠加从而使 textLabel 被移出屏幕外
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -126,6 +152,11 @@
             self.detailTextLabel.frame = CGRectSetWidth(self.detailTextLabel.frame, CGRectGetWidth(self.contentView.bounds) - CGRectGetMinX(self.detailTextLabel.frame));
         }
     }
+    
+    CGFloat alpha = self.isEnabled ? 1 : 0.5;
+    for (UIView *subview in self.subviews) {
+        subview.alpha = alpha;
+    }
 }
 
 // QMUITableViewCell 由于 init 时就把 tableView 传进来，所以可以在更早的时机拿到 qmui_tableView 的值，如果是系统的 UITableView，默认只能在添加到 tableView 上之后才可以获取到引用
@@ -135,24 +166,25 @@
 
 - (void)setEnabled:(BOOL)enabled {
     if (_enabled != enabled) {
-        if (enabled) {
-            self.userInteractionEnabled = YES;
-            UIColor *titleLabelColor = self.qmui_styledTextLabelColor;
-            if (titleLabelColor) {
-                self.textLabel.textColor = titleLabelColor;
-            }
-            UIColor *detailLabelColor = self.qmui_styledDetailTextLabelColor;
-            if (detailLabelColor) {
-                self.detailTextLabel.textColor = detailLabelColor;
-            }
-        } else {
-            self.userInteractionEnabled = NO;
-            UIColor *disabledColor = UIColorDisabled;
-            if (disabledColor) {
-                self.textLabel.textColor = disabledColor;
-                self.detailTextLabel.textColor = disabledColor;
-            }
-        }
+        [self setNeedsLayout];
+//        if (enabled) {
+//            self.userInteractionEnabled = YES;
+//            UIColor *titleLabelColor = self.qmui_styledTextLabelColor;
+//            if (titleLabelColor) {
+//                self.textLabel.textColor = titleLabelColor;
+//            }
+//            UIColor *detailLabelColor = self.qmui_styledDetailTextLabelColor;
+//            if (detailLabelColor) {
+//                self.detailTextLabel.textColor = detailLabelColor;
+//            }
+//        } else {
+//            self.userInteractionEnabled = NO;
+//            UIColor *disabledColor = UIColorDisabled;
+//            if (disabledColor) {
+//                self.textLabel.textColor = disabledColor;
+//                self.detailTextLabel.textColor = disabledColor;
+//            }
+//        }
         _enabled = enabled;
     }
 }
@@ -270,6 +302,9 @@
 #pragma mark - Touch Event
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isEnabled) {
+        return nil;
+    }
     UIView *view = [super hitTest:point withEvent:event];
     if (!view) {
         return nil;

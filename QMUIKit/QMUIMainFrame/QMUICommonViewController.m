@@ -35,8 +35,6 @@
     QMUIKeyboardManager *_hideKeyboardManager;
     QMUIViewControllerHideKeyboardDelegateObject *_hideKeyboadDelegateObject;
 }
-
-@property(nonatomic,strong,readwrite) QMUINavigationTitleView *titleView;
 @end
 
 @implementation QMUICommonViewController

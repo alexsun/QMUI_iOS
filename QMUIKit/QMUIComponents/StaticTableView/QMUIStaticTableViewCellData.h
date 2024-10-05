@@ -50,6 +50,12 @@ typedef NS_ENUM(NSInteger, QMUIStaticTableViewCellAccessoryType) {
 /// cell 的高度，默认为 TableViewCellNormalHeight
 @property(nonatomic, assign) CGFloat height;
 
+/**
+ *  调整 Cell 额外附加高度，默认为 0。
+ *  @warning 目前只对 self-sizing cell 开放
+ */
+@property(nonatomic, assign) CGFloat additionalHeight;
+
 /// cell 左边要显示的图片，将会被设置到 cell.imageView.image
 @property(nonatomic, strong, nullable) UIImage *image;
 

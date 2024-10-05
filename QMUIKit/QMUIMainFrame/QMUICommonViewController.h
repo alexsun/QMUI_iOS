@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  同时，QMUINavigationTitleView提供了更多的功能，具体可以参考QMUINavigationTitleView的文档。<br/>
  *  @see QMUINavigationTitleView
  */
-@property(nullable, nonatomic, strong, readonly) QMUINavigationTitleView *titleView;
+@property(nullable, nonatomic, strong) QMUINavigationTitleView *titleView;
 
 /**
  *  修改当前界面要支持的横竖屏方向，默认为 SupportedOrientationMask

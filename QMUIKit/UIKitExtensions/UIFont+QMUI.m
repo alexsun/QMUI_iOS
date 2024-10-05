@@ -70,11 +70,15 @@
                                   italic:(BOOL)italic {
     
     // 计算出 body 类型比默认的大小要变化了多少，然后在 pointSize 的基础上叠加这个变化
-    UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    CGFloat offsetPointSize = font.pointSize - 17;// default UIFontTextStyleBody fontSize is 17
-    CGFloat finalPointSize = pointSize + offsetPointSize;
-    finalPointSize = MAX(MIN(finalPointSize, upperLimitSize), lowerLimitSize);
-    font = [UIFont qmui_systemFontOfSize:finalPointSize weight:weight italic:NO];
+//    UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+//    CGFloat offsetPointSize = font.pointSize - 17;// default UIFontTextStyleBody fontSize is 17
+//    CGFloat finalPointSize = pointSize + offsetPointSize;
+//    finalPointSize = MAX(MIN(finalPointSize, upperLimitSize), lowerLimitSize);
+//    font = [UIFont qmui_systemFontOfSize:finalPointSize weight:weight italic:NO];
+    
+    UIFont *font = [UIFont qmui_systemFontOfSize:pointSize weight:weight italic:italic];
+    UIFontMetrics *metrics = [UIFontMetrics metricsForTextStyle:UIFontTextStyleBody];
+    font = [metrics scaledFontForFont:font maximumPointSize:upperLimitSize];
     
     return font;
 }

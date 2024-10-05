@@ -81,7 +81,7 @@ static NSUInteger const kTagForCenteredPlayButton = 1;
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         
-        self.maximumZoomScale = 2.0;
+        self.maximumZoomScale = 3.0;
         
         _scrollView = [[UIScrollView alloc] qmui_initWithSize:frame.size];
         self.scrollView.showsHorizontalScrollIndicator = NO;
@@ -257,7 +257,12 @@ static NSUInteger const kTagForCenteredPlayButton = 1;
 
 - (void)setMaximumZoomScale:(CGFloat)maximumZoomScale {
     _maximumZoomScale = maximumZoomScale;
-    self.scrollView.maximumZoomScale = maximumZoomScale;
+    
+    BOOL enabledZoomImageView = [self enabledZoomImageView];
+    CGFloat minimum = [self minimumZoomScale];
+    CGFloat maximum = enabledZoomImageView ? maximumZoomScale * MIN(1, minimum) : minimum;
+    maximum = MAX(minimum, maximum);// 可能外部通过 contentMode = UIViewContentModeScaleAspectFit 的方式来让小图片撑满当前的 zoomImageView，所以算出来 minimumZoomScale 会很大（至少比 maximumZoomScale 大），所以这里要做一个保护
+    self.scrollView.maximumZoomScale = maximum;
 }
 
 - (CGFloat)minimumZoomScale {
@@ -301,7 +306,7 @@ static NSUInteger const kTagForCenteredPlayButton = 1;
     
     BOOL enabledZoomImageView = [self enabledZoomImageView];
     CGFloat minimumZoomScale = [self minimumZoomScale];
-    CGFloat maximumZoomScale = enabledZoomImageView ? self.maximumZoomScale : minimumZoomScale;
+    CGFloat maximumZoomScale = enabledZoomImageView ? self.maximumZoomScale * MAX(1, minimumZoomScale) : minimumZoomScale;
     maximumZoomScale = MAX(minimumZoomScale, maximumZoomScale);// 可能外部通过 contentMode = UIViewContentModeScaleAspectFit 的方式来让小图片撑满当前的 zoomImageView，所以算出来 minimumZoomScale 会很大（至少比 maximumZoomScale 大），所以这里要做一个保护
     CGFloat zoomScale = minimumZoomScale;
     BOOL shouldFireDidZoomingManual = zoomScale == self.scrollView.zoomScale;
@@ -787,7 +792,7 @@ static NSUInteger const kTagForCenteredPlayButton = 1;
     
     if ([self enabledZoomImageView]) {
         // 如果图片被压缩了，则第一次放大到原图大小，第二次放大到最大倍数
-        if (self.scrollView.zoomScale >= self.scrollView.maximumZoomScale) {
+        if (fabs(self.scrollView.zoomScale - self.scrollView.maximumZoomScale) <= FLT_EPSILON) {
             [self setZoomScale:self.scrollView.minimumZoomScale animated:YES];
         } else {
             CGFloat newZoomScale = 0;

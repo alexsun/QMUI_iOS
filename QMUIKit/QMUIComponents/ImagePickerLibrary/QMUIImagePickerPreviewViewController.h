@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  更新数据并刷新 UI，手工调用
  *
- *  @param imageAssetArray         包含所有需要展示的图片的数组
+ *  @param imagesAssets         包含所有需要展示的图片的数组
  *  @param selectedImageAssetArray 包含所有需要展示的图片中已经被选中的图片的数组
  *  @param currentImageIndex       当前展示的图片在 imageAssetArray 的索引
  *  @param singleCheckMode         是否为单选模式，如果是单选模式，则不显示 checkbox

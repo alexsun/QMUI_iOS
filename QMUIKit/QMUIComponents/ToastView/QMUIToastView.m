@@ -74,9 +74,9 @@ static NSMutableArray <QMUIToastView *> *kToastViews = nil;
     self.backgroundColor = UIColorClear;
     self.layer.allowsGroupOpacity = NO;
     
-    _maskView = [[UIView alloc] init];
-    self.maskView.backgroundColor = UIColorClear;
-    [self addSubview:self.maskView];
+    _qmui_maskView = [[UIView alloc] init];
+    self.qmui_maskView.backgroundColor = UIColorClear;
+    [self addSubview:self.qmui_maskView];
     
     [self registerNotifications];
 }
@@ -144,7 +144,7 @@ static NSMutableArray <QMUIToastView *> *kToastViews = nil;
     [super layoutSubviews];
     
     self.frame = self.parentView.bounds;
-    self.maskView.frame = self.bounds;
+    self.qmui_maskView.frame = self.bounds;
     
     CGFloat contentWidth = CGRectGetWidth(self.parentView.bounds);
     CGFloat contentHeight = CGRectGetHeight(self.parentView.bounds);

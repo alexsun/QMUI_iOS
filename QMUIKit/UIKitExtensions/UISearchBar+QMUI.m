@@ -411,7 +411,7 @@ static char kAssociatedObjectKey_textFieldMarginsBlock;
     // placeholder 的文字颜色
     self.qmui_placeholderColor = SearchBarPlaceholderColor;
 
-    self.placeholder = @"搜索";
+    self.placeholder = NSLocalizedString(@"搜索", nil);
     self.autocorrectionType = UITextAutocorrectionTypeNo;
     self.autocapitalizationType = UITextAutocapitalizationTypeNone;
 

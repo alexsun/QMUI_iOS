@@ -107,6 +107,10 @@ static NSString * const QMUI_VERSION = @"4.7.0";
 #import "QMUIAssetsManager.h"
 #endif
 
+#if __has_include("QMUIAssetFetchResultChange.h")
+#import "QMUIAssetFetchResultChange.h"
+#endif
+
 #if __has_include("QMUIBadgeProtocol.h")
 #import "QMUIBadgeProtocol.h"
 #endif

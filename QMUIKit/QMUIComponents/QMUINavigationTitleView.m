@@ -26,7 +26,7 @@
 
 @interface QMUINavigationTitleView ()
 
-@property(nonatomic, strong, readonly) UIView *contentView;
+@property(nonatomic, strong) UIView *contentView;
 @property(nonatomic, assign) CGSize titleLabelSize;
 @property(nonatomic, assign) CGSize subtitleLabelSize;
 @property(nonatomic, strong) UIImageView *accessoryTypeView;

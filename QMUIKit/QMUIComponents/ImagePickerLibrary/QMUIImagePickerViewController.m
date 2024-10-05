@@ -67,7 +67,6 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
 @property (nonatomic, assign) BOOL hasScrollToInitialPosition;
 @property (nonatomic, assign) BOOL canScrollToInitialPosition;// 要等数据加载完才允许滚动
 @property (nonatomic, strong) NSMutableDictionary <NSString *, QMUIAsset *> *imageAssets;
-@property (nonatomic, assign, readonly) QMUIAlbumSortType albumSortType;
 
 @end
 
@@ -100,7 +99,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
 
 - (void)setupNavigationItems {
     [super setupNavigationItems];
-    self.navigationItem.rightBarButtonItem = [UIBarButtonItem qmui_itemWithTitle:@"取消" target:self action:@selector(handleCancelPickerImage:)];
+    self.navigationItem.rightBarButtonItem = [UIBarButtonItem qmui_itemWithTitle:NSLocalizedString(@"取消", nil) target:self action:@selector(handleCancelPickerImage:)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -217,6 +216,10 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
 - (void)updateCollectionViewWithChangeInstance:(PHChange *)changeInstance {
     PHFetchResultChangeDetails <PHAsset *> *changeDetails =
         [changeInstance changeDetailsForFetchResult:self.assetsGroup.phFetchResult];
+    if (!changeDetails) {
+        [self refreshWithAssetsGroup:self.assetsGroup];
+        return;
+    }
     self.assetsGroup.phFetchResult = changeDetails.fetchResultAfterChanges;
     QMUIAssetFetchResultChange *fetchResultChange = [[QMUIAssetFetchResultChange alloc] initWithChangeDetails:changeDetails
                                                                                                 albumSortType:self.albumSortType];
@@ -267,6 +270,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
         self.imagePickerPreviewViewController.maximumSelectImageCount = self.maximumSelectImageCount;
         self.imagePickerPreviewViewController.minimumSelectImageCount = self.minimumSelectImageCount;
         self.imagePickerPreviewViewController.albumSortType = self.albumSortType;
+        
     }
 }
 
@@ -354,7 +358,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
         _sendButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         [_sendButton setTitleColor:UIColorMake(124, 124, 124) forState:UIControlStateNormal];
         [_sendButton setTitleColor:UIColorGray forState:UIControlStateDisabled];
-        [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendButton setTitle:NSLocalizedString(@"发送", nil) forState:UIControlStateNormal];
         _sendButton.qmui_outsideEdge = UIEdgeInsetsMake(-12, -20, -12, -20);
         [_sendButton sizeToFit];
         [_sendButton addTarget:self action:@selector(handleSendButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -370,7 +374,7 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
         _previewButton.titleLabel.font = self.sendButton.titleLabel.font;
         [_previewButton setTitleColor:[self.sendButton titleColorForState:UIControlStateNormal] forState:UIControlStateNormal];
         [_previewButton setTitleColor:[self.sendButton titleColorForState:UIControlStateDisabled] forState:UIControlStateDisabled];
-        [_previewButton setTitle:@"预览" forState:UIControlStateNormal];
+        [_previewButton setTitle:NSLocalizedString(@"预览", nil) forState:UIControlStateNormal];
         _previewButton.qmui_outsideEdge = UIEdgeInsetsMake(-12, -20, -12, -20);
         [_previewButton sizeToFit];
         [_previewButton addTarget:self action:@selector(handlePreviewButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -535,10 +539,10 @@ static NSString * const kImageOrUnknownCellIdentifier = @"imageorunknown";
         // 选中该资源
         if ([self.selectedImageAssetArray count] >= _maximumSelectImageCount) {
             if (!_alertTitleWhenExceedMaxSelectImageCount) {
-                _alertTitleWhenExceedMaxSelectImageCount = [NSString stringWithFormat:@"你最多只能选择%@张图片", @(_maximumSelectImageCount)];
+                _alertTitleWhenExceedMaxSelectImageCount = [NSString stringWithFormat:NSLocalizedString(@"你最多只能选择%@张图片", nil), @(_maximumSelectImageCount)];
             }
             if (!_alertButtonTitleWhenExceedMaxSelectImageCount) {
-                _alertButtonTitleWhenExceedMaxSelectImageCount = [NSString stringWithFormat:@"我知道了"];
+                _alertButtonTitleWhenExceedMaxSelectImageCount = [NSString stringWithFormat:NSLocalizedString(@"我知道了", nil)];
             }
             
             QMUIAlertController *alertController = [QMUIAlertController alertControllerWithTitle:_alertTitleWhenExceedMaxSelectImageCount message:nil preferredStyle:QMUIAlertControllerStyleAlert];

@@ -70,6 +70,8 @@ extern const CGFloat QMUIImagePreviewViewControllerCornerRadiusAutomaticDimensio
 /// 是否支持手势拖拽退出预览模式，默认为 YES。仅对以 present 方式进入大图预览的场景有效。
 @property(nonatomic, assign) BOOL dismissingGestureEnabled;
 
+- (void)handleDismissingPreviewGesture:(UIPanGestureRecognizer *)gesture;
+
 @end
 
 @interface QMUIImagePreviewViewController (UIAppearance)

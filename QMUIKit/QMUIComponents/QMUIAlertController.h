@@ -93,7 +93,7 @@ typedef NS_ENUM(NSInteger, QMUIAlertControllerStyle) {
     UIView          *_scrollWrapView;   // 包含上下两个 scrollView 的容器
     UIScrollView    *_headerScrollView; // 上半部分的内容的 scrollView，例如 title、message
     UIScrollView    *_buttonScrollView; // 所有按钮的容器，特别的，actionSheet 下的取消按钮不放在这里面，因为它不参与滚动
-    UIControl       *_maskView;         // 背后占满整个屏幕的半透明黑色遮罩
+    UIControl       *_qmui_maskView;         // 背后占满整个屏幕的半透明黑色遮罩
 }
 
 /// alert距离屏幕四边的间距，默认UIEdgeInsetsMake(0, 0, 0, 0)。alert的宽度最终是通过屏幕宽度减去水平的 alertContentMargin 和 alertContentMaximumWidth 决定的。
