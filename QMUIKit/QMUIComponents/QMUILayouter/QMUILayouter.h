@@ -7,20 +7,13 @@
  */
 
 //
-//  QMUIPopupMenuBaseItem.h
+//  QMUILayouter.h
 //  QMUIKit
 //
-//  Created by QMUI Team on 2018/8/21.
+//  Created by QMUI Team on 2024/1/2.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "QMUIPopupMenuItemProtocol.h"
-
-/**
- 用于 QMUIPopupMenuView 的 item 基类，便于自定义各种类型的 item。若有 subview 请直接添加到 self 上，自身大小的计算请写到 sizeThatFits:，布局写到 layoutSubviews。
- */
-@interface QMUIPopupMenuBaseItem : UIView <QMUIPopupMenuItemProtocol>
-
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
-
-@end
+#import "QMUILayouterLinearHorizontal.h"
+#import "QMUILayouterLinearVertical.h"
