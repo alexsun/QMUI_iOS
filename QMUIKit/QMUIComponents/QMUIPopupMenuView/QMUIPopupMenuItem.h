@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 每次将 item 关联到 itemView 上时都会调用这个 block，可以理解为在 @c QMUIPopupMenuView.itemViewConfigurationHandler 之后立马会调用 @c QMUIPopupMenuItem.configurationBlock 。
 /// 业务可利用这个 block 做一些自定义的配置 itemView 的行为。
-@property(nonatomic, copy) void (^configurationBlock)(__kindof QMUIPopupMenuItem *aItem, __kindof UIControl<QMUIPopupMenuItemViewProtocol> *aItemView, NSInteger section, NSInteger index);
+@property(nonatomic, copy, nullable) void (^configurationBlock)(__kindof QMUIPopupMenuItem *aItem, __kindof UIControl<QMUIPopupMenuItemViewProtocol> *aItemView, NSInteger section, NSInteger index);
 
 /// item 被点击时的事件处理接口
 /// @note 需要在内部自行隐藏 QMUIPopupMenuView。
