@@ -62,7 +62,9 @@
 @property(nonatomic, copy) void (^disappearCompletionBlock)(BOOL finished);
 
 /// 标志 modal 本身以 present 的形式显示之后，又再继续 present 了一个子界面后从子界面回来时触发的 viewWillAppear:
-@property(nonatomic, assign) BOOL viewWillAppearByPresentedViewController;
+//@property(nonatomic, assign) BOOL viewWillAppearByPresentedViewController;
+/// 标志是否已经走过一次viewWillAppear了
+@property(nonatomic, assign) BOOL hasAlreadyViewWillAppear;
 
 /// 标志是否已经走过一次viewWillDisappear了，用于hideInView的情况
 @property(nonatomic, assign) BOOL hasAlreadyViewWillDisappear;
@@ -171,10 +173,14 @@
     }
     
     // 如果是因为 present 了新的界面再从那边回来，导致走到 viewWillAppear，则后面那些升起浮层的操作都可以不用做了，因为浮层从来没被降下去过
-    self.viewWillAppearByPresentedViewController = [self isShowingPresentedViewController];
-    if (self.viewWillAppearByPresentedViewController) {
+//    self.viewWillAppearByPresentedViewController = [self isShowingPresentedViewController];
+//    if (self.viewWillAppearByPresentedViewController) {
+//        return;
+//    }ssss
+    if (self.hasAlreadyViewWillAppear) {
         return;
     }
+    self.hasAlreadyViewWillAppear = YES;
     
     void (^didShownCompletion)(BOOL finished) = ^(BOOL finished) {
         if (self.contentViewController) {
@@ -225,7 +231,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if (self.viewWillAppearByPresentedViewController) {
+    if (self.hasAlreadyViewWillAppear) {
         if (self.contentViewController) {
             [self.contentViewController endAppearanceTransition];
         }
