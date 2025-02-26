@@ -789,17 +789,21 @@ static NSUInteger alertControllerCount = 0;
             contentHeight -= self.sheetContentMargin.top;
         }
         
-        CGFloat extendHeight = self.isExtendBottomLayout ? SafeAreaInsetsConstantForDeviceWithNotch.bottom : 0;
+        CGFloat safeBottom = self.view.safeAreaInsets.bottom;
+        CGFloat extendHeight = self.isExtendBottomLayout ? safeBottom : 0;
         
         self.containerView.qmui_frameApplyTransform =
         CGRectMake(
                    (CGRectGetWidth(self.view.bounds) - CGRectGetWidth(self.containerView.frame)) / 2,
-                   SafeAreaInsetsConstantForDeviceWithNotch.top + screenSpaceHeight - contentHeight - extendHeight,
+                   self.view.safeAreaInsets.top + screenSpaceHeight - contentHeight - extendHeight,
                    CGRectGetWidth(self.containerView.frame),
                    contentHeight + extendHeight
                    );
         
-        self.extendLayer.frame = CGRectFlatMake(0, CGRectGetHeight(self.containerView.bounds) - SafeAreaInsetsConstantForDeviceWithNotch.bottom - 1, CGRectGetWidth(self.containerView.bounds), SafeAreaInsetsConstantForDeviceWithNotch.bottom + 1);
+        self.extendLayer.frame = CGRectFlatMake(0,
+                                                CGRectGetHeight(self.containerView.bounds) - safeBottom - 1,
+                                                CGRectGetWidth(self.containerView.bounds),
+                                                safeBottom + 1);
     }
 }
 
