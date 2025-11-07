@@ -138,11 +138,6 @@
     if (self.dimmingView && !self.dimmingView.superview) {
         [self.view addSubview:self.dimmingView];
     }
-    if (self.contentViewController) {
-        [self addChildViewController:self.contentViewController];
-    }
-    [self.view addSubview:self.contentView];
-    [self.contentViewController didMoveToParentViewController:self];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -168,24 +163,20 @@
         animated = self.appearAnimated;
     }
     
-    if (self.contentViewController) {
-        [self.contentViewController beginAppearanceTransition:YES animated:animated];
-    }
+    [self.contentViewController beginAppearanceTransition:YES animated:animated];
     
     // 如果是因为 present 了新的界面再从那边回来，导致走到 viewWillAppear，则后面那些升起浮层的操作都可以不用做了，因为浮层从来没被降下去过
 //    self.viewWillAppearByPresentedViewController = [self isShowingPresentedViewController];
 //    if (self.viewWillAppearByPresentedViewController) {
 //        return;
-//    }ssss
+//    }
     if (self.hasAlreadyViewWillAppear) {
         return;
     }
     self.hasAlreadyViewWillAppear = YES;
     
     void (^didShownCompletion)(BOOL finished) = ^(BOOL finished) {
-        if (self.contentViewController) {
-            [self.contentViewController endAppearanceTransition];
-        }
+        [self.contentViewController endAppearanceTransition];
         
         if (self.appearCompletionBlock) {
             self.appearCompletionBlock(finished);
@@ -267,14 +258,14 @@
     self.avoidKeyboardLayout = YES;
     [self.view endEditing:YES];
     
-    if (self.contentViewController) {
-        [self.contentViewController beginAppearanceTransition:NO animated:animated];
-    }
+    [self.contentViewController beginAppearanceTransition:NO animated:animated];
     
     // 如果是因为 present 了新的界面导致走到 willDisappear，则后面那些降下浮层的操作都可以不用做了
     if (willDisappearByPresentedViewController) {
         return;
     }
+    
+    [self.contentViewController willMoveToParentViewController:nil];
     
     void (^didHiddenCompletion)(BOOL finished) = ^(BOOL finished) {
         
@@ -309,6 +300,8 @@
         [self.contentView removeFromSuperview];
         if (self.contentViewController) {
             [self.contentViewController endAppearanceTransition];
+            [self.contentViewController removeFromParentViewController];
+            self.contentViewController = nil;
         }
         
         self.visible = NO;
@@ -455,12 +448,27 @@
 }
 
 - (void)setContentViewController:(UIViewController<QMUIModalPresentationContentViewControllerProtocol> *)contentViewController {
-    if (![contentViewController isEqual:_contentViewController]) {
-        _contentViewController.qmui_modalPresentationViewController = nil;
+    if ([contentViewController isEqual:_contentViewController]) {
+        return;
     }
+    _contentViewController.qmui_modalPresentationViewController = nil;
+    if (_contentViewController) {
+        [_contentViewController willMoveToParentViewController:nil];
+        [_contentViewController.view removeFromSuperview];
+        [_contentViewController removeFromParentViewController];
+    }
+    
     contentViewController.qmui_modalPresentationViewController = self;
+    
     _contentViewController = contentViewController;
-    self.contentView = contentViewController.view;
+    _contentView = contentViewController.view;
+    
+    if (contentViewController && ![contentViewController.parentViewController isEqual:self]) {
+        [self addChildViewController:contentViewController];
+        [self.view addSubview:_contentView];
+        [contentViewController didMoveToParentViewController:self];
+        [self updateLayout];
+    }
 }
 
 #pragma mark - Showing and Hiding
@@ -668,6 +676,21 @@
         self.hasAlreadyViewWillDisappear = YES;
     }
     [self endAppearanceTransition];
+}
+
+- (void)showInViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    if (self.visible) return;
+    self.visible = YES;
+    
+    self.appearCompletionBlock = completion;
+    [viewController addChildViewController:self];
+    self.view.frame = viewController.view.bounds;
+    [viewController.view addSubview:self.view];
+    [self didMoveToParentViewController:viewController];
+}
+
+- (void)hideInViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    [self hideInView:viewController.view animated:animated completion:completion];
 }
 
 - (CGRect)contentViewFrameForShowing {

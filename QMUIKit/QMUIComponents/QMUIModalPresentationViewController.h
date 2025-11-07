@@ -276,6 +276,10 @@ typedef NS_ENUM(NSUInteger, QMUIModalPresentationAnimationStyle) {
  */
 - (void)hideInView:(UIView *)view animated:(BOOL)animated completion:(void (^ _Nullable)(BOOL finished))completion;
 
+- (void)showInViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^ _Nullable)(BOOL))completion;
+
+- (void)hideInViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^ _Nullable)(BOOL))completion;
+
 @end
 
 
