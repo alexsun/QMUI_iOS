@@ -721,7 +721,9 @@
 }
 
 - (BOOL)isShowingPresentedViewController {
-    return self.shownInPresentedMode && self.presentedViewController && self.presentedViewController.presentingViewController == self;
+//    return self.shownInPresentedMode && self.presentedViewController && self.presentedViewController.presentingViewController == self;
+    // showInWindow 模式下，也能 present UIViewController
+    return self.presentedViewController && self.presentedViewController.presentingViewController == self;
 }
 
 #pragma mark - <QMUIKeyboardManagerDelegate>
