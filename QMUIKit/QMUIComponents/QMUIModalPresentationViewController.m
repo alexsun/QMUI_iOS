@@ -138,6 +138,9 @@
     if (self.dimmingView && !self.dimmingView.superview) {
         [self.view addSubview:self.dimmingView];
     }
+    if (self.contentView && !self.contentView.superview) {
+        [self.view addSubview:self.contentView];
+    }
 }
 
 - (void)viewDidLayoutSubviews {
@@ -440,11 +443,24 @@
 
 #pragma mark - ContentView
 
+@synthesize contentView = _contentView;
+
 - (UIView *)contentView {
-    if (!_contentView && self.contentViewController) {
+    if (!_contentView) {
         _contentView = self.contentViewController.view;
     }
     return _contentView;
+}
+
+- (void)setContentView:(UIView *)contentView {
+    if (_contentView != contentView) {
+        [_contentView removeFromSuperview];
+        _contentView = contentView;
+        if (self.isViewLoaded) {
+            [self.view addSubview:contentView];
+            [self updateLayout];
+        }
+    }
 }
 
 - (void)setContentViewController:(UIViewController<QMUIModalPresentationContentViewControllerProtocol> *)contentViewController {
@@ -454,20 +470,24 @@
     _contentViewController.qmui_modalPresentationViewController = nil;
     if (_contentViewController) {
         [_contentViewController willMoveToParentViewController:nil];
-        [_contentViewController.view removeFromSuperview];
+        if (_contentViewController.isViewLoaded) {
+            [_contentViewController.view removeFromSuperview];
+        }
         [_contentViewController removeFromParentViewController];
     }
     
     contentViewController.qmui_modalPresentationViewController = self;
     
     _contentViewController = contentViewController;
-    _contentView = contentViewController.view;
     
     if (contentViewController && ![contentViewController.parentViewController isEqual:self]) {
         [self addChildViewController:contentViewController];
-        [self.view addSubview:_contentView];
+        if (self.isViewLoaded) {
+            self.contentView = contentViewController.view;
+        } else {
+            self.contentView = nil;
+        }
         [contentViewController didMoveToParentViewController:self];
-        [self updateLayout];
     }
 }
 
