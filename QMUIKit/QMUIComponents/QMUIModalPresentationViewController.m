@@ -138,7 +138,7 @@
     if (self.dimmingView && !self.dimmingView.superview) {
         [self.view addSubview:self.dimmingView];
     }
-    if (self.contentView && !self.contentView.superview) {
+    if (self.contentView && self.contentView.superview != self.view) {
         [self.view addSubview:self.contentView];
     }
 }
