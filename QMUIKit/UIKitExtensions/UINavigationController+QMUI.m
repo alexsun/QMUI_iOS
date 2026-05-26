@@ -143,7 +143,13 @@ QMUISynthesizeIdStrongProperty(qmui_interactiveGestureDelegator, setQmui_interac
             }
         });
         
-        OverrideImplementation(NSClassFromString([NSString qmui_stringByConcat:@"_", @"UINavigationBar", @"ContentView", nil]), NSSelectorFromString(@"__backButtonAction:"), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+        NSString *barContentViewString;
+        if (QMUIHelper.isUsedLiquidGlass) {
+            barContentViewString = [NSString qmui_stringByConcat:@"UIKit.", @"NavigationBar", @"ContentView", nil];
+        } else {
+            barContentViewString = [NSString qmui_stringByConcat:@"_", @"UINavigationBar", @"ContentView", nil];
+        }
+        OverrideImplementation(NSClassFromString(barContentViewString), NSSelectorFromString(@"__backButtonAction:"), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIView *selfObject, id firstArgv) {
                 
                 if ([selfObject.superview isKindOfClass:UINavigationBar.class]) {
@@ -162,15 +168,30 @@ QMUISynthesizeIdStrongProperty(qmui_interactiveGestureDelegator, setQmui_interac
             };
         });
         
-        OverrideImplementation([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
-            return ^void(UINavigationController *selfObject, UIView *transitionView, NSInteger transition, UIView *fromView, UIView *toView) {
-                
-                BOOL (*originSelectorIMP)(id, SEL, UIView *, NSInteger , UIView *, UIView *);
-                originSelectorIMP = (BOOL (*)(id, SEL, UIView *, NSInteger , UIView *, UIView *))originalIMPProvider();
-                originSelectorIMP(selfObject, originCMD, transitionView, transition, fromView, toView);
-                selfObject.qmui_endedTransitionTopViewController = selfObject.topViewController;
-            };
-        });
+        if (@available(iOS 18.0, *)) {
+            OverrideImplementation([UINavigationController class], NSSelectorFromString([NSString qmui_stringByConcat:@"_", @"didEndTransition", @"FromView:", @"toView:", @"wasCustom:", nil]), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+                return ^(UINavigationController *selfObject, UIView *fromView, UIView *toView, BOOL wasCustom) {
+                    
+                    // call super
+                    void (*originSelectorIMP)(id, SEL, UIView *, UIView * , BOOL);
+                    originSelectorIMP = (void (*)(id, SEL, UIView *, UIView * , BOOL))originalIMPProvider();
+                    originSelectorIMP(selfObject, originCMD, fromView, toView, wasCustom);
+                    
+                    selfObject.qmui_endedTransitionTopViewController = selfObject.topViewController;
+                };
+            });
+        } else {
+            OverrideImplementation([UINavigationController class], NSSelectorFromString(@"navigationTransitionView:didEndTransition:fromView:toView:"), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
+                return ^void(UINavigationController *selfObject, UIView *transitionView, NSInteger transition, UIView *fromView, UIView *toView) {
+                    
+                    BOOL (*originSelectorIMP)(id, SEL, UIView *, NSInteger , UIView *, UIView *);
+                    originSelectorIMP = (BOOL (*)(id, SEL, UIView *, NSInteger , UIView *, UIView *))originalIMPProvider();
+                    originSelectorIMP(selfObject, originCMD, transitionView, transition, fromView, toView);
+                    
+                    selfObject.qmui_endedTransitionTopViewController = selfObject.topViewController;
+                };
+            });
+        }
         
 #pragma mark - pushViewController:animated:
         OverrideImplementation([UINavigationController class], @selector(pushViewController:animated:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
